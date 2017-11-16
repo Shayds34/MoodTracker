@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Project 3 - Mood Tracker</string>
+    <string name="action_settings">Settings</string>
+    <string name="comment">Your comment</string>
+    <string name="comment_hint">Add your comment</string>
+    <string name="validate">Add comment</string>
+    <string name="cancel">Cancel</string>
+    <string name="share_using">Share using</string>
+    <string name="this_is_the_description">This is the description</string>
+</resources>
