@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Projet 3 - Mood Tracker</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="comment">Votre commentaire</string>
+    <string name="comment_hint">Ajoutez votre commentaire</string>
+    <string name="validate">Valider</string>
+    <string name="cancel">Annuler</string>
+    <string name="share_using">Partager avec</string>
+    <string name="this_is_the_description">C\'est la description</string>
+</resources>
