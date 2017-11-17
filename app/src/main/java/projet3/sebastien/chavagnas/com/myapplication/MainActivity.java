@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
             // Set up the VerticalViewPager with the sections adapter
             final VerticalViewPager verticalViewPager = findViewById(R.id.container2);
             verticalViewPager.setAdapter(sectionsPagerAdapter);
+            // Starting the app from the Happy Mood fragment
+            verticalViewPager.setCurrentItem(3);
 
             // Set up buttons
             ImageView comment_btn = findViewById(R.id.comment_fab);
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
                                     EditText etComment = mView.findViewById(R.id.etComment);
-
                                     String mDate = new Date().toString();
 
                                     // The current position of our VerticalViewPager
@@ -156,6 +157,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onDestroy(){
+            VerticalViewPager verticalViewPager = findViewById(R.id.container2);
+
+            String mComment = "";
+            String mDate = new Date().toString();
+            int mood = verticalViewPager.getCurrentItem();
+
+            AddData(mDate, mComment, mood);
+
+
             myDB.close();
             super.onDestroy();
         }
