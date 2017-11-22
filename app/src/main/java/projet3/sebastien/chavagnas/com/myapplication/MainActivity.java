@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                                     String mText = mDate + " " + etComment.getText().toString() + " " + mood;
 
                                     if (etComment.length() != 0){
-                                        AddData(mDate, etComment.getText().toString(), mood);
+                                        myDB.addMood(new MoodItem(mDate, etComment.getText().toString(), mood));
                                         Toast.makeText(MainActivity.this, mText, Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(MainActivity.this, "You must put something into the text field.", Toast.LENGTH_LONG).show();
@@ -113,15 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        private void AddData(String date, String comment, int mood) {
-            boolean insertData = myDB.addData(date, comment, mood);
-
-            if (insertData) Toast.makeText(MainActivity.this, "Successfully entered data.", Toast.LENGTH_LONG).show();
-            else Toast.makeText(MainActivity.this, "Something went wrong.", Toast.LENGTH_LONG).show();
-        }
-
-
-        public class SectionsPagerAdapter extends FragmentPagerAdapter {
+               public class SectionsPagerAdapter extends FragmentPagerAdapter {
             SectionsPagerAdapter(FragmentManager fm) {
                 super(fm);
             }
@@ -163,10 +155,7 @@ public class MainActivity extends AppCompatActivity {
             String mDate = new Date().toString();
             int mood = verticalViewPager.getCurrentItem();
 
-            AddData(mDate, mComment, mood);
-
-
-            myDB.close();
+            myDB.addMood(new MoodItem(mDate, mComment, mood));
             super.onDestroy();
         }
     }

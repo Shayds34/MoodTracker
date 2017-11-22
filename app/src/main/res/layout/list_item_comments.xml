@@ -3,38 +3,27 @@
     android:id="@+id/row_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/light_sage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp" >
+    android:padding="5dp" >
 
     <ImageView
-        android:id="@+id/avatar"
+        android:id="@+id/comment_icon"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_comment_black_48px"
-        android:contentDescription="@string/this_is_the_description"/>
+        android:contentDescription="@string/this_is_the_description"
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/display_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:layout_marginStart="10dp"
-        android:layout_alignTop="@+id/avatar"
         android:textStyle="bold"
         tools:text="Date"
         tools:ignore="RelativeOverlap"/>
-
-    <TextView
-        android:id="@+id/display_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:layout_alignStart="@+id/display_date"
-        android:layout_below="@+id/display_date"
-        tools:text="My comment" />
 
 </RelativeLayout>

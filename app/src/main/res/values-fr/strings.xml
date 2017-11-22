@@ -8,4 +8,11 @@
     <string name="cancel">Annuler</string>
     <string name="share_using">Partager avec</string>
     <string name="this_is_the_description">C\'est la description</string>
+    <string name="seven_days_ago">Il y a une semaine</string>
+    <string name="six_days_ago">Il y a six jours</string>
+    <string name="five_days_ago">Il y a cinq jours</string>
+    <string name="four_days_ago">Il y a quatre jours</string>
+    <string name="three_days_ago">Il y a trois jours</string>
+    <string name="two_days_ago">Avant-hier</string>
+    <string name="yesterday">Hier</string>
 </resources>

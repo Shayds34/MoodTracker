@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "MyDataBase.db";
+    private static final String DATABASE_NAME = "MoodTrackerDataB.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String MOOD_KEY = "_id";
-    static final String MOOD_DATE = "date";
-    static final String MOOD_COMMENT = "comment";
+    private static final String MOOD_DATE = "date";
+    private static final String MOOD_COMMENT = "comment";
     private static final String MOOD_MOOD = "mood";
 
     private static final String MOOD_TABLE_NAME = "my_moods";
@@ -26,10 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             MOOD_COMMENT + " TEXT, " +
             MOOD_MOOD + " INTEGER);";
 
+    // Constructor
     DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Table creation
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(MOOD_TABLE_CREATE);
@@ -41,35 +43,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Add data to the database via Content Values
-    boolean addData(String date, String comment, int mood) {
-        SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
+     void addMood(MoodItem moodItem){
+        SQLiteDatabase myDB = this.getWritableDatabase();
+
         ContentValues mContentValues = new ContentValues();
-        mContentValues.put(MOOD_DATE, date);
-        mContentValues.put(MOOD_COMMENT, comment);
-        mContentValues.put(MOOD_MOOD, mood);
+        mContentValues.put(MOOD_DATE, moodItem.getDate());
+        mContentValues.put(MOOD_COMMENT, moodItem.getComment());
+        mContentValues.put(MOOD_MOOD, moodItem.getMood());
 
-        long mResult = mSQLiteDatabase.insert(MOOD_TABLE_NAME, null, mContentValues);
-
-        // if (mResult != -1) {
-        //     return true;
-        // } else {
-        //     return false;
-        // }
-        // Simplify to :
-        return mResult != -1;
+        myDB.insert(MOOD_TABLE_NAME, null, mContentValues);
+        myDB.close();
     }
 
-
-    Cursor getListContents(){
+    // Select the 7 last data from the Database
+    Cursor getAllData(){
         SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
         Cursor cursor;
-
-        // Show all comments:
-        // cursor = mSQLiteDatabase.rawQuery("SELECT _id, date, comment FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC", null);
-
-        // Show only the last 7 comments:
-        cursor = mSQLiteDatabase.rawQuery("SELECT _id, date, comment FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
-
+        cursor = mSQLiteDatabase.rawQuery("SELECT * FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
         return cursor;
     }
 }

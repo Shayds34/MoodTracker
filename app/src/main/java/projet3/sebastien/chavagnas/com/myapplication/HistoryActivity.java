@@ -3,46 +3,91 @@ package projet3.sebastien.chavagnas.com.myapplication;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class HistoryActivity extends AppCompatActivity {
-
-    // My Database
-    DatabaseHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        // Open Database
-        myDB = new DatabaseHelper(this);
+        DatabaseHelper myDB = new DatabaseHelper(this);
+        Cursor mCursor = myDB.getAllData();
+        ArrayList<Integer> mCount = new ArrayList<>();
 
-        // Create a new cursor showing the content of getListContents
-        Cursor cursor = myDB.getListContents();
+        while (mCursor.moveToNext()){
+            int mMood = mCursor.getInt(0);
+            mCount.add(mMood);
+        }
 
-        // Setup mapping from cursor to view fields:
-        String[] fromFieldNames = new String[] {DatabaseHelper.MOOD_DATE, DatabaseHelper.MOOD_COMMENT};
-        int[] toViewIDs = new int[] {R.id.display_date, R.id.display_comment};
-
-
-        //Create the adapter to map columns of the DB onto elements of the UI
-        SimpleCursorAdapter myCursorAdapter =
-                new SimpleCursorAdapter(
-                        this,                   // Context
-                        R.layout.list_item_comments,    // Our row template
-                        cursor,                         // Our cursor
-                        fromFieldNames,                 // Our columns in DataBase
-                        toViewIDs,                      // Our views in custom layout
-                        0
-                );
-
-        // Set the adapter for the list view
-        ListView listView = findViewById(R.id.list_item);
-        listView.setAdapter(myCursorAdapter);
-
-
+        // Could it be simplified ?
+        switch (mCount.size()) {
+            case 0:
+                Toast.makeText(this, "The history is empty.", Toast.LENGTH_LONG).show();
+                this.finish();
+                myDB.close();
+                break;
+            case 1:
+                String[] mDates = {getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 2:
+                mDates = new String[]{getString(R.string.two_days_ago),
+                                    getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 3:
+                mDates = new String[]{getString(R.string.three_days_ago),
+                        getString(R.string.two_days_ago),
+                        getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 4:
+                mDates = new String[]{getString(R.string.four_days_ago),
+                        getString(R.string.three_days_ago),
+                        getString(R.string.two_days_ago),
+                        getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 5:
+                mDates = new String[]{getString(R.string.five_days_ago),
+                        getString(R.string.four_days_ago),
+                        getString(R.string.three_days_ago),
+                        getString(R.string.two_days_ago),
+                        getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 6:
+                mDates = new String[]{getString(R.string.six_days_ago),
+                        getString(R.string.five_days_ago),
+                        getString(R.string.four_days_ago),
+                        getString(R.string.three_days_ago),
+                        getString(R.string.two_days_ago),
+                        getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+            case 7:
+                mDates = new String[]{getString(R.string.seven_days_ago),
+                        getString(R.string.six_days_ago),
+                        getString(R.string.five_days_ago),
+                        getString(R.string.four_days_ago),
+                        getString(R.string.three_days_ago),
+                        getString(R.string.two_days_ago),
+                        getString(R.string.yesterday)};
+                Adapter(mDates);
+                break;
+        }
     }
-}
+
+        public void Adapter(String[] mDates) {
+            ListAdapter datesAdapter = new CustomAdapter(this, mDates);
+            ListView listView = findViewById(R.id.list_item);
+            listView.setAdapter(datesAdapter);
+        }
+    }
