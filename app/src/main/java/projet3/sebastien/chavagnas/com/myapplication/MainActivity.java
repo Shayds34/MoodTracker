@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
                                     EditText etComment = mView.findViewById(R.id.etComment);
-                                    String mDate = new Date().toString();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault());
+                                    String mDate = simpleDateFormat.format(new Date());
 
                                     // The current position of our VerticalViewPager
                                     // From where the user want to comment the mood of the day
@@ -152,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
             VerticalViewPager verticalViewPager = findViewById(R.id.container2);
 
             String mComment = "";
-            String mDate = new Date().toString();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault());
+            String mDate = simpleDateFormat.format(new Date());
             int mood = verticalViewPager.getCurrentItem();
 
             myDB.addMood(new MoodItem(mDate, mComment, mood));

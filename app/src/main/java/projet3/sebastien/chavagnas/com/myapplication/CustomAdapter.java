@@ -39,33 +39,45 @@ public class CustomAdapter extends ArrayAdapter<String> {
         mCustomView.getLayoutParams().height = parent.getHeight() / getCount();
         mCustomView.requestLayout();
 
-
-
+        // Opening DB and create Cursors
         DatabaseHelper myDB = new DatabaseHelper(getContext());
         Cursor mCursor = myDB.getAllData();
+        Cursor mDateCursor = myDB.getDates();
 
-        ArrayList<String> mCommentsArray = new ArrayList<>();
-        ArrayList<Integer> mMoodsArray = new ArrayList<>();
+        // Create ArrayList
+        ArrayList<String> mDatesArrayList = new ArrayList<>();
+        ArrayList<String> mCommentsArrayList = new ArrayList<>();
+        ArrayList<Integer> mMoodsArrayList = new ArrayList<>();
 
 
         // Adding SQLite data to ArrayLists
+        while (mDateCursor.moveToNext()){
+            String mDates = mDateCursor.getString(0);
+            mDatesArrayList.add(mDates);
+        }
+
+        // Adding SQLite data to ArrayLists
         while (mCursor.moveToNext()){
-            String mComment = mCursor.getString(2);
-            int mMood = mCursor.getInt(3);
-            mCommentsArray.add(mComment);
-            mMoodsArray.add(mMood);
+            String mCommentColumn = mCursor.getString(2);
+            int mMoodColumn = mCursor.getInt(3);
+            mCommentsArrayList.add(mCommentColumn);
+            mMoodsArrayList.add(mMoodColumn);
         }
 
         // Reversing lists to match ListView order
-        Collections.reverse(mCommentsArray);
-        Collections.reverse(mMoodsArray);
+        Collections.reverse(mDatesArrayList);
+        Collections.reverse(mCommentsArrayList);
+        Collections.reverse(mMoodsArrayList);
 
-        int[] mMoods = new int[mMoodsArray.size()];
-        final String[] mComments = new String[mCommentsArray.size()];
+        // Print test
+        System.out.println("mDatesArrayList : " + mDatesArrayList);
 
-        for ( int i = 0; i < mMoodsArray.size(); i++){
-            mComments[i] = mCommentsArray.get(i);
-            mMoods[i] = mMoodsArray.get(i);
+        int[] mMoods = new int[mMoodsArrayList.size()];
+        final String[] mComments = new String[mCommentsArrayList.size()];
+
+        for ( int i = 0; i < mMoodsArrayList.size(); i++){
+            mComments[i] = mCommentsArrayList.get(i);
+            mMoods[i] = mMoodsArrayList.get(i);
         }
 
         // Make the mShowComment button visible/invisible whenever there is a comment or not
