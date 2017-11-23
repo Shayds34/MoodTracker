@@ -69,4 +69,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor = mSQLiteDatabase.rawQuery("SELECT strftime('%d-%m-%Y', date) AS one_day FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now', '-1 day') GROUP BY one_day ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
         return cursor;
     }
+
+    Cursor getLastComment(){
+        SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
+        Cursor cursor;
+        cursor = mSQLiteDatabase.rawQuery("SELECT comment FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC LIMIT 1", null);
+        return cursor;
+    }
 }

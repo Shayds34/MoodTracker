@@ -1,5 +1,6 @@
 package projet3.sebastien.chavagnas.com.myapplication;
 
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
@@ -91,16 +92,22 @@ public class MainActivity extends AppCompatActivity {
             });
 
             // Share - Button
+            // So far, it shares the very last comment only
+            // TODO
+            // Improvements
             share_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    DatabaseHelper myDB = new DatabaseHelper(getApplicationContext());
+                    Cursor mCursor = myDB.getLastComment();
+                    mCursor.moveToNext();
+                    String mLastComment = mCursor.getString(0);
+
+
                     Intent mIntent = new Intent(Intent.ACTION_SEND);
                     mIntent.setType("text/plain");
-                    String mShareBody = "Your body here";
-                    String mShareSubject = "Your subject here";
 
-                    mIntent.putExtra(Intent.EXTRA_SUBJECT, mShareSubject);
-                    mIntent.putExtra(Intent.EXTRA_TEXT, mShareBody);
+                    mIntent.putExtra(Intent.EXTRA_TEXT, "Share a comment from my application: \"" + mLastComment + "\"");
                     startActivity(Intent.createChooser(mIntent, getString(R.string.share_using)));
                 }
             });
