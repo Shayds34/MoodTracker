@@ -8,8 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import static android.support.v4.view.ViewConfigurationCompat.getScaledPagingTouchSlop;
-
 
 public class VerticalViewPager extends ViewPager {
     private static final String TAG = "VerticalViewPager";
@@ -45,7 +43,7 @@ public class VerticalViewPager extends ViewPager {
     public VerticalViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         final ViewConfiguration configuration = ViewConfiguration.get(context);
-        mTouchSlop = getScaledPagingTouchSlop(configuration);
+        mTouchSlop = configuration.getScaledTouchSlop();
         init();
     }
 
@@ -66,23 +64,28 @@ public class VerticalViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
+        // Show x & y of MotionEvent ev
         final float x = ev.getX();
         final float y = ev.getY();
-
         if (DEBUG) Log.v(TAG, "onTouchEvent " + x + ", " + y);
 
+        //
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                // User is touching the screen, we intercept x & y
                 performClick();
                 mLastMotionX = x;
                 mLastMotionY = y;
                 return super.onTouchEvent(ev) && verticalDrag(ev);
             }
             case MotionEvent.ACTION_MOVE: {
+                // User is moving the finger on screen, we intercept the movement
                 performClick();
                 final float xDiff = Math.abs(x - mLastMotionX);
                 final float yDiff = Math.abs(y - mLastMotionY);
                 if (!mVerticalDrag) {
+                    // ViewPager uses xDiff to start drag/swipe to left/right
+                    // We use here yDiff to manage swiping up and down
                     if (yDiff > mTouchSlop && yDiff > xDiff) { //Swiping up and down
                         mVerticalDrag = true;
                     }
@@ -92,6 +95,7 @@ public class VerticalViewPager extends ViewPager {
                 }
             }
             case MotionEvent.ACTION_UP: {
+                // User is lifting the finger off the screen, we set the TouchEvent to false
                 performClick();
                 if (mVerticalDrag) {
                     mVerticalDrag = false;
@@ -106,6 +110,7 @@ public class VerticalViewPager extends ViewPager {
 
 
     private boolean verticalDrag(MotionEvent ev) {
+        // Switching x & y results to simulate Vertical motion
         final float y = ev.getX();
         final float x = ev.getY();
         ev.setLocation(x, y);
