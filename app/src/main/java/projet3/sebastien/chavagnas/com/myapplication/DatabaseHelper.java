@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String MOOD_TABLE_CREATE = "CREATE TABLE " +
             MOOD_TABLE_NAME + " (" +
             MOOD_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            MOOD_DATE + " TEXT, " +
+            MOOD_DATE + " DATETIME, " +
             MOOD_COMMENT + " TEXT, " +
             MOOD_MOOD + " INTEGER);";
 
@@ -55,11 +55,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         myDB.close();
     }
 
-    // Select the 7 last data from the Database
+    // Select the 7 last data from the Database starting from yesterday
     Cursor getAllData(){
         SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
         Cursor cursor;
-        cursor = mSQLiteDatabase.rawQuery("SELECT * FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
+        cursor = mSQLiteDatabase.rawQuery("SELECT _id, strftime('%d-%m-%Y', date) AS one_day, comment, mood  FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now', '-1 day') GROUP BY one_day ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
+        return cursor;
+    }
+
+    Cursor getDates(){
+        SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
+        Cursor cursor;
+        cursor = mSQLiteDatabase.rawQuery("SELECT strftime('%d-%m-%Y', date) AS one_day FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now', '-1 day') GROUP BY one_day ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
         return cursor;
     }
 }
