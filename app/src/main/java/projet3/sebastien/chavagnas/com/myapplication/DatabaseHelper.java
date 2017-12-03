@@ -13,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private static final String MOOD_KEY = "_id";
-    private static final String MOOD_DATE = "date";
+    private static final String MOOD_DATE = "_date";
     private static final String MOOD_COMMENT = "comment";
     private static final String MOOD_MOOD = "mood";
 
@@ -59,21 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Cursor getAllData(){
         SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
         Cursor cursor;
-        cursor = mSQLiteDatabase.rawQuery("SELECT _id, strftime('%d-%m-%Y', date) AS one_day, comment, mood  FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now', '-1 day') GROUP BY one_day ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
-        return cursor;
-    }
-
-    Cursor getDates(){
-        SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
-        Cursor cursor;
-        cursor = mSQLiteDatabase.rawQuery("SELECT strftime('%d-%m-%Y', date) AS one_day FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now', '-1 day') GROUP BY one_day ORDER BY " + MOOD_KEY + " DESC LIMIT 7", null);
-        return cursor;
-    }
-
-    Cursor getLastComment(){
-        SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
-        Cursor cursor;
-        cursor = mSQLiteDatabase.rawQuery("SELECT comment FROM " + MOOD_TABLE_NAME + " ORDER BY " + MOOD_KEY + " DESC LIMIT 1", null);
+        cursor = mSQLiteDatabase.rawQuery("SELECT _id, strftime('%Y-%m-%d', _date) AS one_day, comment, mood  FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now') GROUP BY one_day ORDER BY one_day DESC LIMIT 7", null);
         return cursor;
     }
 }
