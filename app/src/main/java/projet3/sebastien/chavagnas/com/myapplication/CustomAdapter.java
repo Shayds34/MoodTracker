@@ -2,6 +2,7 @@ package projet3.sebastien.chavagnas.com.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ public class CustomAdapter extends ArrayAdapter<String> {
         String mRow = getItem(position);
         TextView mDate = mCustomView.findViewById(R.id.display_date);
         mDate.setText(mRow);
+
+        ImageView mShareMood = mCustomView.findViewById(R.id.share_icon);
         ImageView mShowComment = mCustomView.findViewById(R.id.comment_icon);
         RelativeLayout mRelativeLayout = mCustomView.findViewById(R.id.row_content);
 
@@ -42,17 +45,16 @@ public class CustomAdapter extends ArrayAdapter<String> {
         // Opening DB and create Cursors
         DatabaseHelper myDB = new DatabaseHelper(getContext());
         Cursor mCursor = myDB.getAllData();
-        Cursor mDateCursor = myDB.getDates();
+        Cursor mDateCursor = myDB.getAllData();
 
         // Create ArrayList
         ArrayList<String> mDatesArrayList = new ArrayList<>();
         ArrayList<String> mCommentsArrayList = new ArrayList<>();
         ArrayList<Integer> mMoodsArrayList = new ArrayList<>();
 
-
         // Adding SQLite data to ArrayLists
         while (mDateCursor.moveToNext()){
-            String mDates = mDateCursor.getString(0);
+            String mDates = mDateCursor.getString(1);
             mDatesArrayList.add(mDates);
         }
 
@@ -91,6 +93,18 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 }
             });
         }
+
+        mShareMood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent(Intent.ACTION_SEND);
+                mIntent.setType("text/plain");
+
+                mIntent.putExtra(Intent.EXTRA_TEXT, "Share a comment from my application: \"" + mComments[position] + "\"");
+                getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+            }
+        });
+
 
         // Make the ListView item change background color and width depending on which mood is found in SQLite Database
         switch (mMoods[position]) {
