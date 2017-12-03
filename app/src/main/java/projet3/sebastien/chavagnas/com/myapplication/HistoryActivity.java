@@ -8,9 +8,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class HistoryActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,69 +21,27 @@ public class HistoryActivity extends AppCompatActivity {
 
         DatabaseHelper myDB = new DatabaseHelper(this);
         Cursor mCursor = myDB.getAllData();
-        ArrayList<Integer> mCount = new ArrayList<>();
+
+        ArrayList<String> mAllDates = new ArrayList<>();
 
         while (mCursor.moveToNext()){
-            int mMood = mCursor.getInt(0);
-            mCount.add(mMood);
+            String mDate = mCursor.getString(1);
+            mAllDates.add(mDate);
         }
 
-        // Could it be simplified ?
-        switch (mCount.size()) {
-            case 0:
-                Toast.makeText(this, "The history is empty.", Toast.LENGTH_LONG).show();
-                this.finish();
-                myDB.close();
-                break;
-            case 1:
-                String[] mDates = {getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 2:
-                mDates = new String[]{getString(R.string.two_days_ago),
-                                    getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 3:
-                mDates = new String[]{getString(R.string.three_days_ago),
-                        getString(R.string.two_days_ago),
-                        getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 4:
-                mDates = new String[]{getString(R.string.four_days_ago),
-                        getString(R.string.three_days_ago),
-                        getString(R.string.two_days_ago),
-                        getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 5:
-                mDates = new String[]{getString(R.string.five_days_ago),
-                        getString(R.string.four_days_ago),
-                        getString(R.string.three_days_ago),
-                        getString(R.string.two_days_ago),
-                        getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 6:
-                mDates = new String[]{getString(R.string.six_days_ago),
-                        getString(R.string.five_days_ago),
-                        getString(R.string.four_days_ago),
-                        getString(R.string.three_days_ago),
-                        getString(R.string.two_days_ago),
-                        getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
-            case 7:
-                mDates = new String[]{getString(R.string.seven_days_ago),
-                        getString(R.string.six_days_ago),
-                        getString(R.string.five_days_ago),
-                        getString(R.string.four_days_ago),
-                        getString(R.string.three_days_ago),
-                        getString(R.string.two_days_ago),
-                        getString(R.string.yesterday)};
-                Adapter(mDates);
-                break;
+        Collections.reverse(mAllDates);
+        String[] mDates = new String[mAllDates.size()];
+
+        for (int i = 0; i < mDates.length; i++){
+            mDates[i] = mAllDates.get(i);
+        }
+
+        if (mAllDates.size() == 0){
+            Toast.makeText(this, "The history is empty.", Toast.LENGTH_LONG).show();
+            this.finish();
+            myDB.close();
+        } else {
+            Adapter(mDates);
         }
     }
 
