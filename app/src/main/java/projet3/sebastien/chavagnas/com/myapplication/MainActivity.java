@@ -1,6 +1,7 @@
 package projet3.sebastien.chavagnas.com.myapplication;
 
-import android.database.Cursor;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
@@ -15,159 +16,128 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 
 public class MainActivity extends AppCompatActivity {
+    // There is 5 different moods
+    private final static int NUMBER_MOODS = 5;
 
-        // My Database
-        DatabaseHelper myDB = new DatabaseHelper(this);
+    // My SharedPreferences
+    SharedPreferences mSharedPreferences;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarmRepeat(this);
 
-            // Create the adapter that will return a fragment for each of the five moods
-            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // Set up the VerticalViewPager with the sections adapter
-            final VerticalViewPager verticalViewPager = findViewById(R.id.container2);
-            verticalViewPager.setAdapter(sectionsPagerAdapter);
-            // Starting the app from the Happy Mood fragment
-            verticalViewPager.setCurrentItem(3);
+        // Create the adapter that will return a fragment for each of the five moods
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-            // Set up buttons
-            ImageView comment_btn = findViewById(R.id.comment_fab);
-            ImageView share_btn = findViewById(R.id.share_fab);
-            ImageView history_btn = findViewById(R.id.history_fab);
+        // Set up the VerticalViewPager with the sections adapter
+        final VerticalViewPager verticalViewPager = findViewById(R.id.container2);
+        verticalViewPager.setAdapter(sectionsPagerAdapter);
 
-            // Comment - Button
-            comment_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
-                    final ViewGroup nullParent = null;
-                    final View mView = getLayoutInflater().inflate(R.layout.comment_dialog_box, nullParent);
+        // Starting the app from the saved fragment, or from Happy Mood fragment if it's a new day
+        verticalViewPager.setCurrentItem(3);
 
-                    mBuilder.setView(mView)
-                            .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+        // Set up buttons
+        ImageView comment_btn = findViewById(R.id.comment_fab);
+        ImageView history_btn = findViewById(R.id.history_fab);
 
-                                    EditText etComment = mView.findViewById(R.id.etComment);
-                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault());
-                                    String mDate = simpleDateFormat.format(new Date());
-
-                                    // The current position of our VerticalViewPager
-                                    // From where the user want to comment the mood of the day
-                                    int mood = verticalViewPager.getCurrentItem();
-
-                                    // Concatenation of Date / Comment / Mood to show in our Toast
-                                    String mText = mDate + " " + etComment.getText().toString() + " " + mood;
-
-                                    if (etComment.length() != 0){
-                                        myDB.addMood(new MoodItem(mDate, etComment.getText().toString(), mood));
-                                        Toast.makeText(MainActivity.this, mText, Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "You must put something into the text field.", Toast.LENGTH_LONG).show();
-                                    }
-
-
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    // TODO
-
-                                }
-                            });
-                    AlertDialog dialog = mBuilder.create();
-                    dialog.show();
-                }
-            });
-
-            // Share - Button
-            // So far, it shares the very last comment only
-            // TODO
-            // Improvements
-            share_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DatabaseHelper myDB = new DatabaseHelper(getApplicationContext());
-                    Cursor mCursor = myDB.getLastComment();
-                    mCursor.moveToNext();
-                    String mLastComment = mCursor.getString(0);
-
-
-                    Intent mIntent = new Intent(Intent.ACTION_SEND);
-                    mIntent.setType("text/plain");
-
-                    mIntent.putExtra(Intent.EXTRA_TEXT, "Share a comment from my application: \"" + mLastComment + "\"");
-                    startActivity(Intent.createChooser(mIntent, getString(R.string.share_using)));
-                }
-            });
-
-            // History - Button
-            history_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-        }
-
-               public class SectionsPagerAdapter extends FragmentPagerAdapter {
-            SectionsPagerAdapter(FragmentManager fm) {
-                super(fm);
-            }
-
+        // Comment - Button
+        comment_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0:
-                        // Displays the Sad/Bad Mood
-                        return new BadMood();
-                    case 1:
-                        // Displays the Disappointed Mood
-                        return new DisappointedMood();
-                    case 2:
-                        // Displays the Normal Mood
-                        return new NormalMood();
-                    case 3:
-                        // Displays the Happy Mood
-                        return new HappyMood();
-                    case 4:
-                        // Displays the Super Happy Mood
-                        return new SuperHappyMood();
-                }
-                return null;
-            }
+            public void onClick(View view) {
+                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+                final ViewGroup nullParent = null;
+                final View mView = getLayoutInflater().inflate(R.layout.comment_dialog_box, nullParent);
 
-            @Override
-            public int getCount() {
-                // There is 5 different mood
-                return 5;
+                mBuilder.setView(mView)
+                        .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                EditText etComment = mView.findViewById(R.id.etComment);
+
+                                // The current position of our VerticalViewPager
+                                // From where the user want to comment the mood of the day
+                                int mood = verticalViewPager.getCurrentItem();
+
+                                // Saved comment
+                                String mSavedComment = "" + getText(R.string.saved_comment);
+                                // Empty comment
+                                String mEmptyComment = "" + getText(R.string.empty_comment);
+
+                                // Check if comment EditText isn't empty
+                                if (etComment.length() != 0){
+                                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                                    editor.putString("Comment", etComment.getText().toString());
+                                    editor.putInt("Mood", mood);
+                                    editor.apply();
+                                    Toast.makeText(MainActivity.this, mSavedComment, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, mEmptyComment, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
             }
+        });
+
+        // History - Button
+        history_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        protected void onDestroy(){
-            VerticalViewPager verticalViewPager = findViewById(R.id.container2);
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    // Displays the Sad/Bad Mood
+                    return new BadMood();
+                case 1:
+                    // Displays the Disappointed Mood
+                    return new DisappointedMood();
+                case 2:
+                    // Displays the Normal Mood
+                    return new NormalMood();
+                case 3:
+                    // Displays the Happy Mood
+                    return new HappyMood();
+                case 4:
+                    // Displays the Super Happy Mood
+                    return new SuperHappyMood();
+            }
+            return null;
+        }
 
-            String mComment = "";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault());
-            String mDate = simpleDateFormat.format(new Date());
-            int mood = verticalViewPager.getCurrentItem();
-
-            myDB.addMood(new MoodItem(mDate, mComment, mood));
-            super.onDestroy();
+        @Override
+        public int getCount() {
+            // There is 5 different mood
+            return NUMBER_MOODS;
         }
     }
+}
 
