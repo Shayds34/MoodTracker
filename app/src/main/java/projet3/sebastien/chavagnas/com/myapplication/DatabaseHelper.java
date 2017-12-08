@@ -59,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Cursor getAllData(){
         SQLiteDatabase mSQLiteDatabase = this.getWritableDatabase();
         Cursor cursor;
-        cursor = mSQLiteDatabase.rawQuery("SELECT _id, strftime('%Y-%m-%d', _date) AS one_day, comment, mood  FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now') GROUP BY one_day ORDER BY one_day DESC LIMIT 7", null);
+        cursor = mSQLiteDatabase.rawQuery("SELECT _id, strftime('%Y-%m-%d %H:%M:%S', _date) AS one_day, comment, mood  FROM " + MOOD_TABLE_NAME + " WHERE one_day IS NOT NULL AND one_day < date('now') GROUP BY one_day ORDER BY one_day DESC LIMIT 7", null);
         return cursor;
     }
 }
