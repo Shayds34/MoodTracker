@@ -74,7 +74,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
         // Print test
         System.out.println("mDatesArrayList : " + mDatesArrayList);
 
-        int[] mMoods = new int[mMoodsArrayList.size()];
+        final int[] mMoods = new int[mMoodsArrayList.size()];
         final String[] mComments = new String[mCommentsArrayList.size()];
 
         for ( int i = 0; i < mMoodsArrayList.size(); i++){
@@ -100,8 +100,53 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 Intent mIntent = new Intent(Intent.ACTION_SEND);
                 mIntent.setType("text/plain");
 
-                mIntent.putExtra(Intent.EXTRA_TEXT, "Share a comment from my application: \"" + mComments[position] + "\"");
-                getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                switch (mMoods[position]){
+                    case 0:
+                        if (mComments[position].equals("")) {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis triste aujourd'hui.");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        } else {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis triste aujourd'hui. Voici pourquoi : \"" + mComments[position] + "\"");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        }
+                        break;
+                    case 1:
+                        if (mComments[position].equals("")) {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je ne suis pas content(e) aujourd'hui.");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        } else {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je ne suis pas content(e) aujourd'hui. Voici pourquoi : \"" + mComments[position] + "\"");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        }
+                        break;
+                    case 2:
+                        if (mComments[position].equals("")) {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis normal(e) aujourd'hui.");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        } else {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis normal(e) aujourd'hui. Voici pourquoi : \"" + mComments[position] + "\"");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        }
+                        break;
+                    case 3:
+                        if (mComments[position].equals("")) {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis content(e) aujourd'hui.");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        } else {
+                            mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis content(e) aujourd'hui. Voici pourquoi : \"" + mComments[position] + "\"");
+                            getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                        }
+                        break;
+                    case 4:
+                        if (mComments[position].equals("")) {
+                        mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis vraiment heureux(se) aujourd'hui.");
+                        getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                    } else {
+                        mIntent.putExtra(Intent.EXTRA_TEXT, "Je suis vraiment heureux(se) aujourd'hui. Voici pourquoi : \"" + mComments[position] + "\"");
+                        getContext().startActivity(Intent.createChooser(mIntent, getContext().getString(R.string.share_using)));
+                    }
+                        break;
+                }
             }
         });
 
