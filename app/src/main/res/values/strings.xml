@@ -15,4 +15,6 @@
     <string name="three_days_ago">3 days ago</string>
     <string name="two_days_ago">2 days ago</string>
     <string name="yesterday">Yesterday</string>
+    <string name="saved_comment">Your comment has been saved.</string>
+    <string name="empty_comment">You must put something into the text field.</string>
 </resources>

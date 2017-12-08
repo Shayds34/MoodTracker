@@ -25,12 +25,23 @@
                   android:label="@string/app_name"
                   android:theme="@style/AppTheme.NoActionBar"
                   android:screenOrientation="portrait"/>
-        <receiver android:name=".AlarmReceiver">
+
+        <receiver android:name=".AlarmReceiver"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <data android:scheme="package"  />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="com.projet3.sebastien.chavagnas.com.myapplication.MY_UNIQUE_ACTION"/>
+                <data android:scheme="package"  />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <data android:scheme="package"  />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

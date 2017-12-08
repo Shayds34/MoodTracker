@@ -15,4 +15,6 @@
     <string name="three_days_ago">Il y a trois jours</string>
     <string name="two_days_ago">Avant-hier</string>
     <string name="yesterday">Hier</string>
+    <string name="saved_comment">Votre commentaire a été enregistré.</string>
+    <string name="empty_comment">Vous devez entrer un commentaire.</string>
 </resources>
